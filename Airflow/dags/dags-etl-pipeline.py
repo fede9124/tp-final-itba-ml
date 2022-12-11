@@ -25,6 +25,7 @@ default_args = {
 
 
 def download_from_s3(Bucket, Key, Filename):
+    print(os.environ)
     s3 = boto3.resource(
         "s3",
         aws_access_key_id = AWS_ACCESS_KEY_ID,
