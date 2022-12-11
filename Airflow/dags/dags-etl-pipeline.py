@@ -54,7 +54,7 @@ with DAG(
 
     task_1_download_from_s3 = PythonOperator(
     task_id='1',
-    python_callable=download_from_s3,
+    python_callable=download_from_s3(
     op_kwargs={
         'Bucket': BUCKET_NAME,
         'Key': KEY,
