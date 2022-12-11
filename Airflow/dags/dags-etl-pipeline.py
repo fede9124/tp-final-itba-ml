@@ -6,13 +6,13 @@ from datetime import timedelta
 import boto3
 import os
 
-'''
+
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
 KEY = 'Santa Cruz/raw_data/atractivos_dashboard.csv'
 FILENAME = '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
-'''
+
 
 default_args = {
     'owner': 'airflow',
@@ -30,7 +30,6 @@ def print_test():
     print('Prueba_OK')
 
 def download_from_s3(Bucket, Key, Filename):
-    print(os.environ)
     s3 = boto3.resource(
         "s3",
         region_name="us-east-1",
@@ -38,11 +37,12 @@ def download_from_s3(Bucket, Key, Filename):
         aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
     bucket = s3.Bucket(Bucket)
     bucket.download_file(Key, Filename)
+    print(Key)
 
 
 # Creo los DAGs de Airflow
 # 1. Traer los datasets de S3 a la instancia de EC2"
-'''
+
 with DAG(
     "download_from_s3",
     default_args=default_args,
@@ -53,31 +53,20 @@ with DAG(
 ) as dag:
 
     task_1_download_from_s3 = PythonOperator(
-    task_id='1',
-    python_callable=download_from_s3(
+    task_id='download',
+    python_callable=download_from_s3,
     op_kwargs={
         'Bucket': BUCKET_NAME,
         'Key': KEY,
         'Filename': FILENAME
-    }
-
-  )
-'''
-
-with DAG(
-    'print_test',
-    default_args=default_args,
-    start_date=datetime(2022, 1, 1), # Fecha de inicio el 30 de noviembre de 2022
-    schedule_interval=None,  # Sin actualización programada
-    catchup=False,  # Catchup
-    tags=['prueba']
-
-) as dag:
-    test = PythonOperator(
-    task_id='2',
+    })
+  
+    task_2_print = PythonOperator(
+    task_id='print',
     python_callable=print_test)
 
 
+  
 '''
 # 2. Cargar los datasets en la base de datos de RDS
 
