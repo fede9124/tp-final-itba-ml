@@ -25,11 +25,8 @@ default_args = {
     'retry_delay': timedelta(seconds=10),
 }
 
-
-def print_test():
-    print('Prueba_OK')
-
 def download_from_s3(Bucket, Key, Filename):
+    print(AWS_ACCESS_KEY_ID)
     s3 = boto3.resource(
         "s3",
         region_name="us-east-1",
@@ -46,26 +43,19 @@ def download_from_s3(Bucket, Key, Filename):
 with DAG(
     "download_from_s3",
     default_args=default_args,
-    start_date=datetime(2022, 1, 1), 
-    schedule_interval=None,  # Sin actualización programada
     catchup=False  # Catchup
 
 ) as dag:
 
-    task_1_download_from_s3 = PythonOperator(
-    task_id='download',
+    task_download_from_s3 = PythonOperator(
+    task_id='download_from_s3',
     python_callable=download_from_s3,
     op_kwargs={
         'Bucket': BUCKET_NAME,
         'Key': KEY,
-        'Filename': FILENAME
-    })
+        'Filename': FILENAME}
+    )
   
-    task_2_print = PythonOperator(
-    task_id='print',
-    python_callable=print_test)
-
-
   
 '''
 # 2. Cargar los datasets en la base de datos de RDS
@@ -73,8 +63,6 @@ with DAG(
 
 with DAG(
     "load_db",
-    start_date=datetime(2022, 12, 31), # Fecha de inicio el 31 de diciembre de 2022
-    schedule_interval=None,  #Sin actualización programada
     catchup=False  # Catchup
 )   as dag:
 
@@ -85,8 +73,6 @@ with DAG(
 
 with DAG(
     "etl",
-    start_date=datetime(2022, 12, 31), # Fecha de inicio el 31 de diciembre de 2022
-    schedule_interval=None,  #Sin actualización programada
     catchup=False  # Catchup
 )   as dag:
 
