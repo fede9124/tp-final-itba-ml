@@ -6,17 +6,18 @@ from datetime import timedelta
 import boto3
 import os
 
+'''
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
 KEY = 'Santa Cruz/raw_data/atractivos_dashboard.csv'
 FILENAME = '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
-
+'''
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2022, 12, 31),
+    'start_date': datetime(2022, 1, 1),
     'email_on_failure': False,
     'email_on_retry': False,
     'schedule_interval': None,
@@ -24,6 +25,9 @@ default_args = {
     'retry_delay': timedelta(seconds=10),
 }
 
+
+def print_test():
+    print('Prueba_OK')
 
 def download_from_s3(Bucket, Key, Filename):
     print(os.environ)
@@ -38,18 +42,19 @@ def download_from_s3(Bucket, Key, Filename):
 
 # Creo los DAGs de Airflow
 # 1. Traer los datasets de S3 a la instancia de EC2"
-
+'''
 with DAG(
     "download_from_s3",
-    start_date=datetime(2022, 11, 30), # Fecha de inicio el 30 de noviembre de 2022
+    default_args=default_args,
+    start_date=timedelta(days=1), 
     schedule_interval=None,  # Sin actualización programada
     catchup=False  # Catchup
+
 ) as dag:
 
     task_1_download_from_s3 = PythonOperator(
     task_id='1',
     python_callable=download_from_s3,
-    default_args=default_args,
     op_kwargs={
         'Bucket': BUCKET_NAME,
         'Key': KEY,
@@ -57,9 +62,20 @@ with DAG(
     }
 
   )
+'''
 
+with DAG(
+    'print_test',
+    default_args=default_args,
+    start_date=datetime(2022, 1, 1), # Fecha de inicio el 30 de noviembre de 2022
+    schedule_interval=None,  # Sin actualización programada
+    catchup=False,  # Catchup
+    tags=['prueba']
 
-
+) as dag:
+    test = PythonOperator(
+    task_id='2',
+    python_callable=print_test)
 
 
 '''
