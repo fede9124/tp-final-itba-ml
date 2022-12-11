@@ -9,6 +9,8 @@ import os
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
+KEY = 'Santa Cruz/raw_data/atractivos_dashboard.csv'
+FILENAME = '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
 
 
 default_args = {
@@ -45,13 +47,13 @@ with DAG(
 ) as dag:
 
     task_1_download_from_s3 = PythonOperator(
-    task_id='download_from_s3',
+    task_id='1',
     python_callable=download_from_s3,
     default_args=default_args,
     op_kwargs={
         'Bucket': BUCKET_NAME,
-        'Key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
-        'Filename': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
+        'Key': KEY,
+        'Filename': FILENAME
     }
 
   )
