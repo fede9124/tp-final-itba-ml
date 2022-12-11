@@ -1,6 +1,6 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
 from datetime import timedelta
 import boto3
@@ -8,7 +8,9 @@ import os
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-BUCKET_NAME = os.environ.get('BUCKET_NAME')
+#BUCKET_NAME = os.environ.get('BUCKET_NAME')
+
+BUCKET_NAME='tp-ml-bucket'
 
 default_args = {
     'owner': 'airflow',
@@ -27,6 +29,7 @@ def download_from_s3(Bucket, Key, Filename):
         "s3",
         aws_access_key_id = AWS_ACCESS_KEY_ID,
         aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
+
     bucket = s3.Bucket(Bucket)
     bucket.download_file(Key, Filename)
 
@@ -45,7 +48,7 @@ with DAG(
     task_id='download_from_s3',
     python_callable=download_from_s3,
     op_kwargs={
-        'Bucket': BUCKET_NAME,
+        'Bucket': 'tp-ml-bucket',
         'Key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
         'Filename': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
     }
