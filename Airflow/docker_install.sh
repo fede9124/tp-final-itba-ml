@@ -22,6 +22,8 @@ echo \
 # Docker Engine Installation
 
 #Última versión
+
+sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Por si quiero usar una versión en particular
@@ -32,4 +34,8 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 # Corroborar instalación correcta
 sudo docker run hello-world
 
-
+# Post instalación
+sudo groupadd docker
+sudo usermod -aG docker $USER
+su -s ${USER}
+#sudo reboot
