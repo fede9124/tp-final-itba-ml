@@ -41,7 +41,7 @@ def download_from_s3(Bucket, Key, Filename):
 
 with DAG(
     "download_from_s3",
-    start_date=datetime(2022, 12, 31), # Fecha de inicio el 31 de diciembre de 2022
+    start_date=datetime(2022, 11, 30), # Fecha de inicio el 30 de noviembre de 2022
     schedule_interval=None,  # Sin actualización programada
     catchup=False  # Catchup
 ) as dag:
