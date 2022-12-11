@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 from datetime import timedelta
 import boto3
+import pandas as pd
 import os
 
 
@@ -12,6 +13,7 @@ AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 BUCKET_NAME = os.environ.get('BUCKET_NAME')
 KEY = 'Santa Cruz/raw_data/atractivos_dashboard.csv'
 FILENAME = '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
+
 
 
 default_args = {
@@ -25,21 +27,65 @@ default_args = {
     'retry_delay': timedelta(seconds=10),
 }
 
+
+def separate_reviews():
+    df = pd.read_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/comentarios_dashboard.csv')
+    
+    df_esp = df.loc[(df.language == 'es'), ]
+    df_esp = df_esp.reset_index(drop=True)
+    df_esp.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/´spanish_data.csv', index = False)
+
+    df_eng = df.loc[(df.language == 'en'), ]
+    df_eng = df_eng.reset_index(drop=True)
+    df_eng.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/english_data.csv', index = False)
+
+    df_pt = df.loc[(df.language == 'pt'), ]
+    df_pt = df_pt.reset_index(drop=True)
+    df_pt.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/portuguese_data.csv', index = False)
+
+
+   
+# DAG para separar comentarios
+
+with DAG(
+    "separate_reviews",
+    default_args=default_args,
+    catchup=False  # Catchup
+
+) as dag:
+
+    task_separate_reviews = PythonOperator(
+    task_id='separate_reviews',
+    python_callable=separate_reviews
+    )
+
+
+
+
+
+
+'''
 def download_from_s3(Bucket, Key, Filename):
     print(AWS_ACCESS_KEY_ID)
     s3 = boto3.resource(
         "s3",
-        region_name="us-east-1",
         aws_access_key_id = AWS_ACCESS_KEY_ID,
-        aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
+        aws_secret_access_key = AWS_SECRET_ACCESS_KEY
+        )
     bucket = s3.Bucket(Bucket)
     bucket.download_file(Key, Filename)
     print(Key)
 
 
 # Creo los DAGs de Airflow
-# 1. Traer los datasets de S3 a la instancia de EC2"
 
+'''
+
+
+
+
+'''
+# 1. Traer los datasets de S3 a la instancia de EC2"
 with DAG(
     "download_from_s3",
     default_args=default_args,
@@ -57,7 +103,7 @@ with DAG(
     )
   
   
-'''
+
 # 2. Cargar los datasets en la base de datos de RDS
 
 
