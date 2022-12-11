@@ -5,6 +5,8 @@ from datetime import datetime
 from datetime import timedelta
 import boto3
 
+AWS_ACCESS_KEY_ID = 'AKIAYZ3EH2CA3B2EDMXT'
+AWS_SECRET_ACCESS_KEY = '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'
 
 default_args = {
     'owner': 'airflow',
@@ -19,13 +21,12 @@ default_args = {
 
 
 def download_from_s3(Bucket, Key, Filename):
-    s3 = boto3.resource("s3")
-    for bucket in s3.buckets.all():
-        print(bucket.name)
-
-    s3 = boto3.client("s3")
-    s3.download_file(Bucket, Key, Filename)
-
+    s3 = boto3.resource(
+        "s3",
+        aws_access_key_id = AWS_ACCESS_KEY_ID,
+        aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
+    bucket = s3.Bucket(Bucket)
+    bucket.download_file(Key, Filename)
 
 
 # Creo los DAGs de Airflow
@@ -42,12 +43,15 @@ with DAG(
     task_id='download_from_s3',
     python_callable=download_from_s3,
     op_kwargs={
-        'Bucket': 'reviews-machine-learning-bucket',
-        'Key': 'atractivos_dashboard.csv',
+        'Bucket': 'tp-ml-bucket',
+        'Key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
         'Filename': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
     }
 
   )
+
+
+
 
 
 '''
