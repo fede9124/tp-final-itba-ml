@@ -29,19 +29,19 @@ default_args = {
 
 
 def separate_reviews():
-    df = pd.read_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/comentarios_dashboard.csv')
+    df = pd.read_csv('/opt/airflow/data/comentarios_dashboard.csv', sep=';')
     
     df_esp = df.loc[(df.language == 'es'), ]
     df_esp = df_esp.reset_index(drop=True)
-    df_esp.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/´spanish_data.csv', index = False)
+    df_esp.to_csv('/opt/airflow/data/spanish_data.csv', index = False, sep=',')
 
     df_eng = df.loc[(df.language == 'en'), ]
     df_eng = df_eng.reset_index(drop=True)
-    df_eng.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/english_data.csv', index = False)
+    df_eng.to_csv('/opt/airflow/data/english_data.csv', index = False, sep=',')
 
     df_pt = df.loc[(df.language == 'pt'), ]
     df_pt = df_pt.reset_index(drop=True)
-    df_pt.to_csv('/home/ubuntu/tp-final-itba-ml/Airflow/data/portuguese_data.csv', index = False)
+    df_pt.to_csv('/opt/airflow/data/portuguese_data.csv', index = False, sep=',')
 
 
    
