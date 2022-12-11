@@ -40,7 +40,7 @@ with DAG(
 
     task_1_download_from_s3 = PythonOperator(
     task_id='download_from_s3',
-    pyhton_callable=download_from_s3,
+    python_callable=download_from_s3,
     op_kwargs={
         'Bucket': 'reviews-machine-learning-bucket',
         'Key': 'atractivos_dashboard.csv',
