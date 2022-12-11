@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.operators.bash import BashOperator
-from airflow.operators.hooks.s3 import S3Hook
 from datetime import datetime
 from datetime import timedelta
 import boto3
@@ -19,15 +18,13 @@ default_args = {
 }
 
 
-#def download_from_s3(key: str, bucket_name: str, local_path: str):
-#    hook = S3Hook('s3_conn')
-#    file_name = hook.download_file(key=key, bucket_name=bucket_name, local_path=local_path)
-#    return file_name
+def download_from_s3(Bucket, Key, Filename):
+    s3 = boto3.resource("s3")
+    for bucket in s3.buckets.all():
+        print(bucket.name)
 
-
-def download_from_s3(key, bucket_name, destination):
-    s3 = boto3.resource('s3')
-    s3.meta.client.download_from_s3(key, bucket_name, destination)
+    s3 = boto3.client("s3")
+    s3.download_file(Bucket, Key, Filename)
 
 
 
@@ -45,9 +42,9 @@ with DAG(
     task_id='download_from_s3',
     pyhton_callable=download_from_s3,
     op_kwargs={
-        'key': 'atractivos_dashboard.csv',
-        'bucket_name': 'reviews-machine-learning-bucket',
-        'destination': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
+        'Bucket': 'reviews-machine-learning-bucket',
+        'Key': 'atractivos_dashboard.csv',
+        'Filename': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
     }
 
   )
