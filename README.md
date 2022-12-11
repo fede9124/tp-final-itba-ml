@@ -17,7 +17,25 @@ Pasos a seguir
 
 
 
+Instalación docker
+Manual 
 
+# VER PORQUE NO FUNCIONA CORRIENDO EL SCRIPT
+Instalación docker
+cd /home/data/tp-final-itba-ml
+sudo chmod +x ./docker_install.sh
+./docker_install.sh
+
+
+# Instalacion Docker Compose
+
+
+
+Instalación Airflow
+https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml
+
+
+# VER SI SE NECESITA UNA IP ELÁSTICA
 
 FAQ
 
