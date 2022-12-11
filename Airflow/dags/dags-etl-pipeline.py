@@ -39,7 +39,8 @@ with DAG(
     pyhton_callable=download_from_s3,
     op_kwargs={
         'key': 'atractivos_dashboard.csv'
-        'local_path': '/home/ubuntu/tp-final-itba-ml/'
+        'bucket_name': 'reviews-machine-learning-bucket'
+        'local_path': '/home/ubuntu/tp-final-itba-ml/Airflow/data/'
     }
 
   )
