@@ -8,9 +8,8 @@ import os
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-#BUCKET_NAME = os.environ.get('BUCKET_NAME')
+BUCKET_NAME = os.environ.get('BUCKET_NAME')
 
-BUCKET_NAME='tp-ml-bucket'
 
 default_args = {
     'owner': 'airflow',
@@ -28,9 +27,9 @@ def download_from_s3(Bucket, Key, Filename):
     print(os.environ)
     s3 = boto3.resource(
         "s3",
+        region_name="us-east-1",
         aws_access_key_id = AWS_ACCESS_KEY_ID,
         aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
-
     bucket = s3.Bucket(Bucket)
     bucket.download_file(Key, Filename)
 
@@ -48,8 +47,9 @@ with DAG(
     task_1_download_from_s3 = PythonOperator(
     task_id='download_from_s3',
     python_callable=download_from_s3,
+    default_args=default_args,
     op_kwargs={
-        'Bucket': 'tp-ml-bucket',
+        'Bucket': BUCKET_NAME,
         'Key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
         'Filename': '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
     }
