@@ -46,7 +46,7 @@ def download_from_s3(Bucket, Key, Filename):
 with DAG(
     "download_from_s3",
     default_args=default_args,
-    start_date=timedelta(days=1), 
+    start_date=datetime(2022, 1, 1), 
     schedule_interval=None,  # Sin actualización programada
     catchup=False  # Catchup
 
