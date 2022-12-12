@@ -34,7 +34,7 @@ def download_from_s3(key: str, bucket_name: str, local_path: str) -> str:
 
 
 def rename_file(ti, new_name: str) -> None:
-    download_file_name = ti.xcom_pull(task_id=['download_from_s3'])
+    download_file_name = ti.xcom_pull(task_ids=['download_from_s3'])
     downloaded_file_path = '/'.join(download_file_name[0].split('/')[:-1])
     os.rename(src=download_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
@@ -65,7 +65,7 @@ def preprocess():
 
 # DAG para bajar archivo
 with DAG(
-    'download_from_s3',
+    'atractivos',
     default_args=default_args,
     catchup=False
 
@@ -93,18 +93,41 @@ with DAG(
     task_download_from_s3 >> task_rename_file
 
 
-# DAG para separar comentarios
+# DAG de comentarios 
+
 with DAG(
-    'separate_reviews',
+    'comentarios',
     default_args=default_args,
     catchup=False  # Catchup
 
 ) as dag:
 
+    task_download_from_s3 = PythonOperator(
+        task_id='download_from_s3',
+        python_callable=download_from_s3,
+        op_kwargs={
+            'key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
+            'bucket_name': 'tp-ml-bucket',
+            'local_path': '/opt/airflow/data/'
+        }
+    )
+
+    task_rename_file = PythonOperator(
+        task_id='rename_file',
+        python_callable=rename_file,
+        op_kwargs={
+            'new_name': 'atractivos.csv'
+        }
+    )
+
+
     task_separate_reviews = PythonOperator(
     task_id='separate_reviews',
     python_callable=separate_reviews
     )
+
+
+    task_download_from_s3 >> task_rename_file >> task_separate_reviews
 
 
 
