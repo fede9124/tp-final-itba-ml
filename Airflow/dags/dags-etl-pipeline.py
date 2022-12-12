@@ -71,8 +71,9 @@ def preprocess():
 
 # DAG para bajar archivo
 with DAG(
-dag_id='download_from_s3',
-catchup=False
+    'download_from_s3',
+    default_args=default_args,
+    catchup=False
 
 ) as dag:
     # Download a file
@@ -99,7 +100,7 @@ catchup=False
 
 # DAG para separar comentarios
 with DAG(
-    "separate_reviews",
+    'separate_reviews',
     default_args=default_args,
     catchup=False  # Catchup
 
@@ -109,10 +110,6 @@ with DAG(
     task_id='separate_reviews',
     python_callable=separate_reviews
     )
-
-
-
-
 
 
 
