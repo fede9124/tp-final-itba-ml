@@ -4,6 +4,12 @@ from airflow.models import taskinstance
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.hooks.S3_hook import S3Hook
+from airflow.hooks.postgres_hook import PostgresHook
+
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
+
 
 import pandas as pd
 import boto3
@@ -39,9 +45,23 @@ def rename_file(ti, new_name: str) -> None:
     os.rename(src=download_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
 
-def separate_reviews():
-    df = pd.read_csv('/opt/airflow/data/comentarios_dashboard.csv', sep=';')
+def upload_data():
+    pg_hook = PostgresHook(postgres_conn_id='postgres_conn')
+    pg_engine: Engine = pg_hook.get_sqlalchemy_engine()
+    df = pd.read_csv(f'/opt/airflow/data/atractivos.csv')
+    df.to_sql(table_name='atractivos', con=Engine, if_exists= 'replace', index= False)
     
+
+def separate_reviews():
+    df = pd.read_csv('/opt/airflow/data/comentarios.csv', sep=';')
+    
+    lang = ['es', 'en', 'pt']
+    for i in lang: 
+        df.loc[(df.language == {i}), ]
+        df = df.reset_index(drop=True)
+        df.to_csv(f'/opt/airflow/data/{i}_data.csv', index = False, sep=',')
+
+'''
     df_esp = df.loc[(df.language == 'es'), ]
     df_esp = df_esp.reset_index(drop=True)
     df_esp.to_csv('/opt/airflow/data/spanish_data.csv', index = False, sep=',')
@@ -55,7 +75,7 @@ def separate_reviews():
     df_pt.to_csv('/opt/airflow/data/portuguese_data.csv', index = False, sep=',')
 
 
-'''
+
 def preprocess():
     df_esp = pd.read_csv('/opt/airflow/data/spanish_data.csv', sep=',')
     df_esp['text_norm'] = df_esp.text.apply(preprocesamiento, language = 'spanish', pos_tag=False, remove_typos=False)
@@ -90,7 +110,23 @@ with DAG(
         }
     )
 
-    task_download_from_s3 >> task_rename_file
+    task_upload_data = PythonOperator(
+        task_id='upload_data',
+        python_callable=upload_data,
+    )
+
+    task_download_from_s3 >> task_rename_file >> task_upload_data
+'''
+    pg_hook = PostgresHook(
+        task_id='PostgresHook',
+        postgres_conn_id="postgres_conn",
+        schema='public'
+    )
+
+    pg_engine: Engine = pg_hook.get_sqlalchemy_engine(
+       
+    )
+'''
 
 
 # DAG de comentarios 
@@ -106,7 +142,7 @@ with DAG(
         task_id='download_from_s3',
         python_callable=download_from_s3,
         op_kwargs={
-            'key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
+            'key': 'Santa Cruz/raw_data/comentarios_dashboard.csv',
             'bucket_name': 'tp-ml-bucket',
             'local_path': '/opt/airflow/data/'
         }
@@ -116,7 +152,7 @@ with DAG(
         task_id='rename_file',
         python_callable=rename_file,
         op_kwargs={
-            'new_name': 'atractivos.csv'
+            'new_name': 'comentarios.csv'
         }
     )
 
@@ -141,7 +177,6 @@ with DAG(
     "load_db",
     catchup=False  # Catchup
 )   as dag:
-
 
 
 
