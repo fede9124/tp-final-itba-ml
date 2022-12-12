@@ -1,7 +1,9 @@
 spacy>=3.0.0,<4.0.0
-en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.0/en_core_web_sm-3.4.0-py3-none-any.whl
-es_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.4.0/es_core_news_sm-3.4.0-py3-none-any.whl
-pt_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-3.4.0/pt_core_news_sm-3.4.0-py3-none-any.whl
+wheel==0.38.4 
+setuptools==65.6.3 
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.4.0/en_core_web_sm-3.4.0.tar.gz#egg=en_core_web_sm
+https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.4.0/es_core_news_sm-3.4.0.tar.gz#egg=es_core_news_sm
+https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-3.4.0/pt_core_news_sm-3.4.0.tar.gz#egg=pt_core_news_sm
 textblob==0.17.1 
 emoji==2.2.0
 gensim==4.2.0
