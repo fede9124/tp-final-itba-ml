@@ -1,9 +1,10 @@
 
 from airflow import DAG
-from airflow.models import Variable
+from airflow.models import taskinstance
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.hooks.S3_hook import S3Hook
+
 import pandas as pd
 import boto3
 import os
@@ -11,13 +12,7 @@ from datetime import datetime
 from datetime import timedelta
 
 
-from NLP_utils import preprocesamiento
-
-
-BUCKET_NAME = Variable.get("bucket_name")
-
-FILENAME = '/opt/airflow/data/atractivos_dashboard_csv'
-
+#from NLP_utils import preprocesamiento
 
 
 default_args = {
@@ -39,9 +34,9 @@ def download_from_s3(key: str, bucket_name: str, local_path: str) -> str:
 
 
 def rename_file(ti, new_name: str) -> None:
-    downloaded_file_name = ti.xcom_pull(task_ids=['download_from_s3'])
-    downloaded_file_path = '/'.join(downloaded_file_name[0].split('/')[:-1])
-    os.rename(src=downloaded_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
+    download_file_name = ti.xcom_pull(task_id=['download_from_s3'])
+    downloaded_file_path = '/'.join(download_file_name[0].split('/')[:-1])
+    os.rename(src=download_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
 
 def separate_reviews():
@@ -60,12 +55,11 @@ def separate_reviews():
     df_pt.to_csv('/opt/airflow/data/portuguese_data.csv', index = False, sep=',')
 
 
-
+'''
 def preprocess():
     df_esp = pd.read_csv('/opt/airflow/data/spanish_data.csv', sep=',')
     df_esp['text_norm'] = df_esp.text.apply(preprocesamiento, language = 'spanish', pos_tag=False, remove_typos=False)
-
-   
+'''
 
 # Creo los DAGs de Airflow
 
@@ -79,13 +73,14 @@ with DAG(
     # Download a file
     task_download_from_s3 = PythonOperator(
         task_id='download_from_s3',
-        python_callable=rename_file,
+        python_callable=download_from_s3,
         op_kwargs={
             'key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
             'bucket_name': 'tp-ml-bucket',
             'local_path': '/opt/airflow/data/'
         }
     )
+
 
     task_rename_file = PythonOperator(
         task_id='rename_file',
