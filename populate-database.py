@@ -1,11 +1,20 @@
 
 import pandas as pd
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
 
-engine = create_engine("postgresql://scott:tiger@localhost:5432/mydatabase")
 
-df = pd.read_csv(atractivos)
-df = pd.read_csv(atractivos)
+endpoint = ''
 
-df.to_sql('comentarios', engine, if_exists= 'replace', index= False)
-df.to_sql('atractivos', engine, if_exists= 'replace', index= False)
+
+engine = create_engine(f'postgresql://postgres:{endpoint}@:5432/db-atractivos-comentarios')
+if not database_exists(engine.url):
+    create_database(engine.url)
+print(database_exists(engine.url))
+
+files = ['atractivos.csv', 'comentarios.csv']
+
+for i in files:
+    df = pd.read_csv(f'/opt/airflow/data/{i}')
+    df.to_sql({i}, engine, if_exists= 'replace', index= False)
+
