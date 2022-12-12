@@ -1,18 +1,22 @@
+
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
+from airflow.hooks.S3_hook import S3Hook
+import pandas as pd
+import boto3
+import os
 from datetime import datetime
 from datetime import timedelta
-import boto3
-import pandas as pd
-import os
 
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-BUCKET_NAME = os.environ.get('BUCKET_NAME')
-KEY = 'Santa Cruz/raw_data/atractivos_dashboard.csv'
-FILENAME = '/home/ubuntu/tp-final-itba-ml/Airflow/data/atractivos_dashboard_csv'
+from NLP_utils import preprocesamiento
+
+
+BUCKET_NAME = Variable.get("bucket_name")
+
+FILENAME = '/opt/airflow/data/atractivos_dashboard_csv'
 
 
 
@@ -26,6 +30,18 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(seconds=10),
 }
+
+
+def download_from_s3(key: str, bucket_name: str, local_path: str) -> str:
+    hook = S3Hook('s3_connection')
+    file_name = hook.download_file(key=key, bucket_name=bucket_name, local_path=local_path)
+    return file_name
+
+
+def rename_file(ti, new_name: str) -> None:
+    downloaded_file_name = ti.xcom_pull(task_ids=['download_from_s3'])
+    downloaded_file_path = '/'.join(downloaded_file_name[0].split('/')[:-1])
+    os.rename(src=downloaded_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
 
 def separate_reviews():
@@ -44,9 +60,44 @@ def separate_reviews():
     df_pt.to_csv('/opt/airflow/data/portuguese_data.csv', index = False, sep=',')
 
 
-   
-# DAG para separar comentarios
 
+def preprocess():
+    df_esp = pd.read_csv('/opt/airflow/data/spanish_data.csv', sep=',')
+    df_esp['text_norm'] = df_esp.text.apply(preprocesamiento, language = 'spanish', pos_tag=False, remove_typos=False)
+
+   
+
+# Creo los DAGs de Airflow
+
+# DAG para bajar archivo
+with DAG(
+dag_id='download_from_s3',
+catchup=False
+
+) as dag:
+    # Download a file
+    task_download_from_s3 = PythonOperator(
+        task_id='download_from_s3',
+        python_callable=rename_file,
+        op_kwargs={
+            'key': 'Santa Cruz/raw_data/atractivos_dashboard.csv',
+            'bucket_name': 'tp-ml-bucket',
+            'local_path': '/opt/airflow/data/'
+        }
+    )
+
+    task_rename_file = PythonOperator(
+        task_id='rename_file',
+        python_callable=rename_file,
+        op_kwargs={
+            'new_name': 'atractivos.csv'
+        }
+    )
+
+    task_download_from_s3 >> task_rename_file
+
+
+# DAG para separar comentarios
 with DAG(
     "separate_reviews",
     default_args=default_args,
@@ -64,46 +115,10 @@ with DAG(
 
 
 
-'''
-def download_from_s3(Bucket, Key, Filename):
-    print(AWS_ACCESS_KEY_ID)
-    s3 = boto3.resource(
-        "s3",
-        aws_access_key_id = AWS_ACCESS_KEY_ID,
-        aws_secret_access_key = AWS_SECRET_ACCESS_KEY
-        )
-    bucket = s3.Bucket(Bucket)
-    bucket.download_file(Key, Filename)
-    print(Key)
-
-
-# Creo los DAGs de Airflow
-
-'''
-
-
 
 
 '''
-# 1. Traer los datasets de S3 a la instancia de EC2"
-with DAG(
-    "download_from_s3",
-    default_args=default_args,
-    catchup=False  # Catchup
-
-) as dag:
-
-    task_download_from_s3 = PythonOperator(
-    task_id='download_from_s3',
-    python_callable=download_from_s3,
-    op_kwargs={
-        'Bucket': BUCKET_NAME,
-        'Key': KEY,
-        'Filename': FILENAME}
-    )
-  
-  
-
+ 
 # 2. Cargar los datasets en la base de datos de RDS
 
 
