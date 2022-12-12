@@ -17,9 +17,7 @@ import os
 from datetime import datetime
 from datetime import timedelta
 
-
-#from NLP_utils import preprocesamiento
-
+from utils.NLP_utils import preprocesamiento
 
 default_args = {
     'owner': 'airflow',
@@ -45,41 +43,33 @@ def rename_file(ti, new_name: str) -> None:
     os.rename(src=download_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
 
-def upload_data():
+def upload_data(file, table_name):
     pg_hook = PostgresHook(postgres_conn_id='postgres_conn')
-    pg_engine: Engine = pg_hook.get_sqlalchemy_engine()
-    df = pd.read_csv(f'/opt/airflow/data/atractivos.csv')
-    df.to_sql(table_name='atractivos', con=Engine, if_exists= 'replace', index= False)
+    engine = pg_hook.get_sqlalchemy_engine()
+    df = pd.read_csv(f'/opt/airflow/data/{file}')
+    df.to_sql(table_name=table_name, con=engine, if_exists= 'replace', index= False)
     
 
 def separate_reviews():
-    df = pd.read_csv('/opt/airflow/data/comentarios.csv', sep=';')
-    
     lang = ['es', 'en', 'pt']
+    df = pd.read_csv('/opt/airflow/data/comentarios.csv', sep=';')
     for i in lang: 
         df.loc[(df.language == {i}), ]
         df = df.reset_index(drop=True)
-        df.to_csv(f'/opt/airflow/data/{i}_data.csv', index = False, sep=',')
-
-'''
-    df_esp = df.loc[(df.language == 'es'), ]
-    df_esp = df_esp.reset_index(drop=True)
-    df_esp.to_csv('/opt/airflow/data/spanish_data.csv', index = False, sep=',')
-
-    df_eng = df.loc[(df.language == 'en'), ]
-    df_eng = df_eng.reset_index(drop=True)
-    df_eng.to_csv('/opt/airflow/data/english_data.csv', index = False, sep=',')
-
-    df_pt = df.loc[(df.language == 'pt'), ]
-    df_pt = df_pt.reset_index(drop=True)
-    df_pt.to_csv('/opt/airflow/data/portuguese_data.csv', index = False, sep=',')
-
+        df.to_csv(f'/opt/airflow/data/{i}_data_raw.csv', index = False, sep=',')
 
 
 def preprocess():
-    df_esp = pd.read_csv('/opt/airflow/data/spanish_data.csv', sep=',')
-    df_esp['text_norm'] = df_esp.text.apply(preprocesamiento, language = 'spanish', pos_tag=False, remove_typos=False)
-'''
+    lang = ['es', 'en', 'pt']
+    lang_long = {'es': 'spanish',
+                'en': 'english',
+                'pt': 'portuguese'}
+    for i in lang:
+        df = pd.read_csv(f'/opt/airflow/data/{i}_data_raw.csv', sep=',')
+        df['text_norm'] = df.text.apply(preprocesamiento, language = lang_long.get(i), pos_tag=False, remove_typos=False)
+        df.to_csv(f'/opt/airflow/data/{i}_data_processed.csv', sep=',')
+
+
 
 # Creo los DAGs de Airflow
 
@@ -110,23 +100,18 @@ with DAG(
         }
     )
 
+
     task_upload_data = PythonOperator(
         task_id='upload_data',
         python_callable=upload_data,
+        op_kwargs={
+            'file': 'atractivos.csv',
+            'table_name': 'atractivos'
+        }
     )
 
     task_download_from_s3 >> task_rename_file >> task_upload_data
-'''
-    pg_hook = PostgresHook(
-        task_id='PostgresHook',
-        postgres_conn_id="postgres_conn",
-        schema='public'
-    )
 
-    pg_engine: Engine = pg_hook.get_sqlalchemy_engine(
-       
-    )
-'''
 
 
 # DAG de comentarios 
@@ -156,6 +141,15 @@ with DAG(
         }
     )
 
+    task_upload_data = PythonOperator(
+        task_id='upload_data',
+        python_callable=upload_data,
+        op_kwargs={
+            'file': 'comentarios.csv',
+            'table_name': 'comentarios'
+        }
+    )
+
 
     task_separate_reviews = PythonOperator(
     task_id='separate_reviews',
@@ -163,15 +157,17 @@ with DAG(
     )
 
 
-    task_download_from_s3 >> task_rename_file >> task_separate_reviews
+    task_preprocess = PythonOperator(
+    task_id='preprocess',
+    python_callable=preprocess
+    )
+
+    task_download_from_s3 >> task_rename_file >> task_upload_data >> task_separate_reviews >> task_preprocess
 
 
-
-
-'''
  
+'''
 # 2. Cargar los datasets en la base de datos de RDS
-
 
 with DAG(
     "load_db",
