@@ -1,5 +1,0 @@
-
-Se requiere: 
-pip  (sudo apt install python3-pip)
-DOCKER
-Airflow
