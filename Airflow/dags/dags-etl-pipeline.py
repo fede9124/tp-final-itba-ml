@@ -18,6 +18,10 @@ from datetime import datetime
 from datetime import timedelta
 
 from utils.NLP_utils import preprocesamiento
+from utils.NLP_ML_esp import cleaning
+from utils.NLP_ML_esp import stoplist
+from utils.NLP_ML_esp import z_score_model
+
 
 default_args = {
     'owner': 'airflow',
@@ -81,6 +85,7 @@ with DAG(
 
 ) as dag:
     # Download a file
+
     task_download_from_s3 = PythonOperator(
         task_id='download_from_s3',
         python_callable=download_from_s3,
@@ -91,7 +96,6 @@ with DAG(
         }
     )
 
-
     task_rename_file = PythonOperator(
         task_id='rename_file',
         python_callable=rename_file,
@@ -99,7 +103,6 @@ with DAG(
             'new_name': 'atractivos_dashboard.csv'
         }
     )
-
 
     task_upload_data = PythonOperator(
         task_id='upload_data',
@@ -187,12 +190,10 @@ with DAG(
         }
     )
 
-
     task_separate_reviews = PythonOperator(
     task_id='separate_reviews',
     python_callable=separate_reviews
     )
-
 
     task_preprocess = PythonOperator(
     task_id='preprocess',
@@ -203,6 +204,34 @@ with DAG(
 
 
  
+
+# Modelos NLP sobre comentarios en español
+
+with DAG(
+    'NLP_español',
+    default_args=default_args,
+    catchup=False  # Catchup
+
+) as dag:
+
+    task_cleaning = PythonOperator(
+        task_id='cleaning',
+        python_callable=cleaning,
+    )
+
+    task_stoplist = PythonOperator(
+        task_id='stopwords',
+        python_callable=stoplist,
+    )
+
+    task_z_score_model = PythonOperator(
+        task_id='z_score_model',
+        python_callable=z_score_model,
+    )
+
+    task_cleaning >> task_stoplist >> task_z_score_model
+    
+
 '''
 # 2. Cargar los datasets en la base de datos de RDS
 
