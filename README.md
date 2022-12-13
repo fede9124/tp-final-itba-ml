@@ -16,7 +16,7 @@ El objetivo es la implementación de un pipeline que permita:
 
 ### Arquitectura implementada
 
-![Arquitectura](C:\Users\Fede\Documents\GitHub\tp-final-itba-ml\Arquitectura\Arquitectura.png)
+[Arquitectura](C:\Users\Fede\Documents\GitHub\tp-final-itba-ml\Arquitectura\Arquitectura.png)
 
 
 Recursos 
