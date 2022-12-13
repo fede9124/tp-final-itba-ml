@@ -52,7 +52,7 @@ def upload_data(file, table_name):
 
 def separate_reviews():
     lang = ['es', 'en', 'pt']
-    df = pd.read_csv('/opt/airflow/data/comentarios.csv', sep=';')
+    df = pd.read_csv('/opt/airflow/data/comentarios_dashboard.csv', sep=',')
     for i in lang: 
         df.loc[(df.language == {i}), ]
         df = df.reset_index(drop=True)
@@ -73,7 +73,7 @@ def preprocess():
 
 # Creo los DAGs de Airflow
 
-# DAG para bajar archivo
+# Tareas sobre atractivos
 with DAG(
     'atractivos',
     default_args=default_args,
@@ -96,7 +96,7 @@ with DAG(
         task_id='rename_file',
         python_callable=rename_file,
         op_kwargs={
-            'new_name': 'atractivos.csv'
+            'new_name': 'atractivos_dashboard.csv'
         }
     )
 
@@ -105,7 +105,7 @@ with DAG(
         task_id='upload_data',
         python_callable=upload_data,
         op_kwargs={
-            'file': 'atractivos.csv',
+            'file': 'atractivos_dashboad.csv',
             'table_name': 'atractivos'
         }
     )
@@ -113,8 +113,7 @@ with DAG(
     task_download_from_s3 >> task_rename_file >> task_upload_data
 
 
-
-# DAG de comentarios 
+# Tareas sobre valoraciones
 
 with DAG(
     'comentarios',
@@ -137,7 +136,7 @@ with DAG(
         task_id='rename_file',
         python_callable=rename_file,
         op_kwargs={
-            'new_name': 'comentarios.csv'
+            'new_name': 'comentarios_dashboard.csv'
         }
     )
 
@@ -145,7 +144,45 @@ with DAG(
         task_id='upload_data',
         python_callable=upload_data,
         op_kwargs={
-            'file': 'comentarios.csv',
+            'file': 'comentarios_dashboard.csv',
+            'table_name': 'valoracion'
+        }
+    )
+
+    task_download_from_s3 >> task_rename_file >> task_upload_data
+
+# Tareas sobre comentarios
+
+with DAG(
+    'comentarios',
+    default_args=default_args,
+    catchup=False  # Catchup
+
+) as dag:
+
+    task_download_from_s3 = PythonOperator(
+        task_id='download_from_s3',
+        python_callable=download_from_s3,
+        op_kwargs={
+            'key': 'Santa Cruz/raw_data/comentarios_nlp.csv',
+            'bucket_name': 'tp-ml-bucket',
+            'local_path': '/opt/airflow/data/'
+        }
+    )
+
+    task_rename_file = PythonOperator(
+        task_id='rename_file',
+        python_callable=rename_file,
+        op_kwargs={
+            'new_name': 'comentarios_nlp.csv'
+        }
+    )
+
+    task_upload_data = PythonOperator(
+        task_id='upload_data',
+        python_callable=upload_data,
+        op_kwargs={
+            'file': 'comentarios_nlp.csv',
             'table_name': 'comentarios'
         }
     )
