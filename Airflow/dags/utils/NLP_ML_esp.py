@@ -19,11 +19,11 @@ import pickle
 import random
 import sys
 from tqdm import tqdm
-from sklearn import manifold
+#from sklearn import manifold
 
 # Z Score
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+#from sklearn.feature_extraction.text import CountVectorizer
+#from sklearn.naive_bayes import MultinomialNB
 from utils.NLP_utils import desarmar_lista
 
 
