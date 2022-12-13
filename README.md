@@ -1,6 +1,12 @@
-Objetivo del problema
+#Trabajo práctico final 
 
-El objetivo del desarrollo es ofrecerle a los clientes una plataforma de visualizacion donde puedan conocer la opinión de los viajeros sobre los atractivos turísticos de su destino a partir de los comentarios de usuarios en plataformas de viaje como TripAdvisor.
+
+## 
+
+## Objetivo del desarrollo
+
+El objetivo es la implementación de un pipeline que permita el procesamiento 
+del desarrollo es ofrecerle a los clientes una plataforma de visualizacion donde puedan conocer la opinión de los viajeros sobre los atractivos turísticos de su destino a partir de los comentarios de usuarios en plataformas de viaje como TripAdvisor.
 
 
 
