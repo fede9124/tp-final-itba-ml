@@ -6,7 +6,6 @@ from airflow.operators.python import PythonOperator
 import boto3
 from datetime import datetime
 from datetime import timedelta
-#from utils.NLP_ML_esp import stoplist
 #from utils.NLP_ML_esp import z_score_model
 
 
@@ -74,6 +73,12 @@ def clean():
     from utils.NLP_ML_esp import cleaning
     df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed.csv', sep=',')
     df = df.apply(cleaning)
+
+
+def create_stoplist():
+    from utils.NLP_ML_esp import stoplist
+    return stoplist
+
 
 # Creo los DAGs de Airflow
 
@@ -219,17 +224,20 @@ with DAG(
         python_callable=clean,
     )
 
-'''
-    task_stoplist = PythonOperator(
-        task_id='stopwords',
-        python_callable=stoplist,
+
+    task_create_stoplist = PythonOperator(
+        task_id='create_stoplist',
+        python_callable=create_stoplist,
     )
 
+    task_cleaning >> task_create_stoplist
+
+'''
     task_z_score_model = PythonOperator(
         task_id='z_score_model',
         python_callable=z_score_model,
     )
 
-    task_cleaning >> task_stoplist >> task_z_score_model
+
 
 '''
