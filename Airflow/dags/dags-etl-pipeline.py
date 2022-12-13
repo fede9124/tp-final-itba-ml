@@ -200,7 +200,7 @@ with DAG(
     task_download_from_s3 >> task_rename_file >> task_upload_data >> task_separate_reviews >> task_preprocess
 
 
- 
+'''
 
 # Modelos NLP sobre comentarios en español
 
@@ -228,3 +228,4 @@ with DAG(
 
     task_cleaning >> task_stoplist >> task_z_score_model
 
+'''
