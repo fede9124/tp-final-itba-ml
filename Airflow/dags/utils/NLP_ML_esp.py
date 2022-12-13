@@ -3,7 +3,6 @@
 from collections import defaultdict
 import re
 import os
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd   
 from gensim import corpora, models, similarities, matutils
@@ -23,20 +22,8 @@ from tqdm import tqdm
 from sklearn import manifold
 
 # Z Score
-import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
-import numpy as np
-import matplotlib.pylab as plt
-import seaborn as sns
-
-import re
-import random
-
-import nltk
-nltk.download('stopwords')
-from nltk.corpus import stopwords
 from utils.NLP_utils import desarmar_lista
 
 
