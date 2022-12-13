@@ -230,34 +230,4 @@ with DAG(
     )
 
     task_cleaning >> task_stoplist >> task_z_score_model
-    
 
-'''
-# 2. Cargar los datasets en la base de datos de RDS
-
-with DAG(
-    "load_db",
-    catchup=False  # Catchup
-)   as dag:
-
-
-
-# 3. Procesar el dataset de comentarios para obtener los datasets que alimentarán el modelo
-
-with DAG(
-    "etl",
-    catchup=False  # Catchup
-)   as dag:
-
-
-# 4. Ejecutar el modelo
-
-with DAG(
-    "ML",
-    start_date=datetime(2022, 12, 31), # Fecha de inicio el 31 de diciembre de 2022
-    schedule_interval=None,  #Sin actualización programada
-    catchup=False  # Catchup
-)   as dag:
-
-
-'''
