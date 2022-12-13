@@ -71,7 +71,6 @@ def cleaning(lang: str) -> str:
         return df
 
 
-
 def stoplist():
         stoplist = stopwords.words(lang)
         specifict_stoplist = ['num', 'ser', 'tener', 'poder', 'haber', 'hacer', 'ver', 'lugar', 'ir', 'parecer', 'si', 'no']
@@ -80,7 +79,6 @@ def stoplist():
         random_stoplist = ['entrar', 'minuto', 'ave', 'gracias', 'dejar', 'cada', 'mas', 'siempre', 'nunca', 'gracia']
         stoplist = stoplist + specifict_stoplist + adjetive_stoplist + atractions_stoplist + random_stoplist
         return stoplist
-
 
 
 def word_embeddings_model():
@@ -97,14 +95,12 @@ def word_embeddings_model():
         w2v_model.save(path + f"modelos/model_{lang}.model")
 
 
-
 def bigrams():
         trainset = (df.text_norm.str.split(' ')).to_list()
         collocations = Phrases(sentences=trainset, min_count=10,threshold=0.5,scoring='npmi') # threshold: minimo score aceptado
         to_collocations = Phraser(collocations)
         df_collocations =pd.DataFrame([x for x in collocations.export_phrases(trainset)],columns=["bigram","score"])
         df_collocations.drop_duplicates().sort_values(by="score",ascending=False).to_csv(path + f'data/bigramas/bigramas_{lang}.csv', index = False)
-
 
 
 def z_score_monroe(DataFrame, variable_clase, variable_contenido, smoth_alpha, preprocessor, min_df, stop_words):  
@@ -139,7 +135,6 @@ def z_score_monroe(DataFrame, variable_clase, variable_contenido, smoth_alpha, p
       
   #devuelve data frame con termino - z_score_monroe
     return(palabras_z_score)
-
 
 
 def z_score_model(df):
