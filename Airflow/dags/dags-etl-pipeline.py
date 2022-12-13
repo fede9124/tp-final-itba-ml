@@ -68,6 +68,7 @@ def preprocess():
         df['text_norm'] = df.text.apply(preprocesamiento, language = lang_long.get(i), pos_tag=False, remove_typos=False)
         df.to_csv(f'/opt/airflow/data/{i}_comentarios_processed.csv', sep=',')
 
+
 def clean():
     import pandas as pd
     from utils.NLP_ML_esp import cleaning
