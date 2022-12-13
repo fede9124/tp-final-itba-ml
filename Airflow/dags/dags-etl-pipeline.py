@@ -69,11 +69,49 @@ def preprocess():
         df.to_csv(f'/opt/airflow/data/{i}_comentarios_processed.csv', sep=',')
 
 
-def clean():
+def clean_es():
     import pandas as pd
-    from utils.NLP_ML_esp import cleaning
     df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed.csv', sep=',')
-    df = df.apply(cleaning)
+    df['text_norm'] = df['text_norm'].str.replace(r'cabo virgén', 'cabo virgenes')
+    df['text_norm'] = df['text_norm'].str.replace(r' recomeir ', ' recomendar ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^recomeir ', 'recomendar ')
+    df['text_norm'] = df['text_norm'].str.replace(r' excursión ', ' excursion ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^excursión ', 'excursion ')
+    df['text_norm'] = df['text_norm'].str.replace(r' increibl ', ' increible ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^increibl ', 'increible ')
+    df['text_norm'] = df['text_norm'].str.replace(r' paisaj ', ' paisaje ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^paisaj ', 'paisaje ')
+    df['text_norm'] = df['text_norm'].str.replace(r' tén ', ' tener ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^tén ', 'tener ')
+    df['text_norm'] = df['text_norm'].str.replace(r' pod ', ' poder ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^pod ', 'poder ')
+    df['text_norm'] = df['text_norm'].str.replace(r' perdertir ', ' perder ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^perdertir ', 'perder ')
+    df['text_norm'] = df['text_norm'].str.replace(r' magallán ', ' magallanes ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^magallán ', 'magallanes ')
+    df['text_norm'] = df['text_norm'].str.replace(r' escursion ', ' excursion ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^escursion ', 'excursion ')
+    df['text_norm'] = df['text_norm'].str.replace(r' confiterio ', ' confiteria ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^confiterio ', 'confiteria ')
+    df['text_norm'] = df['text_norm'].str.replace(r' chaltir ', ' chalten ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^chaltir ', 'chalten ')
+    df['text_norm'] = df['text_norm'].str.replace(r' chaltar ', ' chalten ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^chaltar ', 'chalten ')
+    df['text_norm'] = df['text_norm'].str.replace(r' olvir ', ' olvidar ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^olvir ', 'olvidar ')
+    df['text_norm'] = df['text_norm'].str.replace(r' unicar ', ' unica ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^unicar ', 'unica ')
+    df['text_norm'] = df['text_norm'].str.replace(r' bellisir ', ' bellisimo ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^bellisir ', 'bellisimo ')
+    df['text_norm'] = df['text_norm'].str.replace(r' apreceír ', ' apreciar ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^apreceír ', 'apreciar ')
+    df['text_norm'] = df['text_norm'].str.replace(r' inigualabl ', ' inigualable ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^inigualabl ', 'inigualable ')
+    df['text_norm'] = df['text_norm'].str.replace(r' cristín ', ' cristina ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^cristín ', 'cristina ')
+    df['text_norm'] = df['text_norm'].str.replace(r' gana ', ' ganas ')
+    df['text_norm'] = df['text_norm'].str.replace(r'^gana ', 'ganas ')
+    df.to_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
 
 
 def create_stoplist():
@@ -222,7 +260,7 @@ with DAG(
 
     task_cleaning = PythonOperator(
         task_id='cleaning',
-        python_callable=clean,
+        python_callable=clean_es,
     )
 
 
