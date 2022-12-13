@@ -6,7 +6,6 @@ from airflow.operators.python import PythonOperator
 import boto3
 from datetime import datetime
 from datetime import timedelta
-#from utils.NLP_ML_esp import cleaning
 #from utils.NLP_ML_esp import stoplist
 #from utils.NLP_ML_esp import z_score_model
 
@@ -70,7 +69,11 @@ def preprocess():
         df['text_norm'] = df.text.apply(preprocesamiento, language = lang_long.get(i), pos_tag=False, remove_typos=False)
         df.to_csv(f'/opt/airflow/data/{i}_comentarios_processed.csv', sep=',')
 
-
+def clean():
+    import pandas as pd
+    from utils.NLP_ML_esp import cleaning
+    df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed.csv', sep=',')
+    df = df.apply(cleaning)
 
 # Creo los DAGs de Airflow
 
@@ -200,7 +203,7 @@ with DAG(
     task_download_from_s3 >> task_rename_file >> task_upload_data >> task_separate_reviews >> task_preprocess
 
 
-'''
+
 
 # Modelos NLP sobre comentarios en español
 
@@ -213,9 +216,10 @@ with DAG(
 
     task_cleaning = PythonOperator(
         task_id='cleaning',
-        python_callable=cleaning,
+        python_callable=clean,
     )
 
+'''
     task_stoplist = PythonOperator(
         task_id='stopwords',
         python_callable=stoplist,
