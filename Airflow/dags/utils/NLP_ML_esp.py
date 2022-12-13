@@ -27,8 +27,7 @@ from sklearn.naive_bayes import MultinomialNB
 from utils.NLP_utils import desarmar_lista
 
 
-def cleaning(lang: str) -> str: 
-        df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed.csv', sep=',')
+def cleaning(df):
         df['text_norm'] = df['text_norm'].str.replace(r'cabo virgén', 'cabo virgenes')
         df['text_norm'] = df['text_norm'].str.replace(r' recomeir ', ' recomendar ')
         df['text_norm'] = df['text_norm'].str.replace(r'^recomeir ', 'recomendar ')
