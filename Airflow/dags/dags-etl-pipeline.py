@@ -52,11 +52,11 @@ def upload_data(file, table_name):
 
 def separate_reviews():
     lang = ['es', 'en', 'pt']
-    df = pd.read_csv('/opt/airflow/data/comentarios_dashboard.csv', sep=',')
+    df = pd.read_csv('/opt/airflow/data/comentarios_nlp.csv', sep=',')
     for i in lang: 
         df.loc[(df.language == {i}), ]
         df = df.reset_index(drop=True)
-        df.to_csv(f'/opt/airflow/data/{i}_data_raw.csv', index = False, sep=',')
+        df.to_csv(f'/opt/airflow/data/{i}_comentarios_raw.csv', index = False, sep=',')
 
 
 def preprocess():
@@ -65,9 +65,9 @@ def preprocess():
                 'en': 'english',
                 'pt': 'portuguese'}
     for i in lang:
-        df = pd.read_csv(f'/opt/airflow/data/{i}_data_raw.csv', sep=',')
+        df = pd.read_csv(f'/opt/airflow/data/{i}_comentarios_raw.csv', sep=',')
         df['text_norm'] = df.text.apply(preprocesamiento, language = lang_long.get(i), pos_tag=False, remove_typos=False)
-        df.to_csv(f'/opt/airflow/data/{i}_data_processed.csv', sep=',')
+        df.to_csv(f'/opt/airflow/data/{i}_comentarios_processed.csv', sep=',')
 
 
 
@@ -116,7 +116,7 @@ with DAG(
 # Tareas sobre valoraciones
 
 with DAG(
-    'comentarios',
+    'valoraciones',
     default_args=default_args,
     catchup=False  # Catchup
 
