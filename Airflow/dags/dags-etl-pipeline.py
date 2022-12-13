@@ -54,7 +54,7 @@ def separate_reviews():
     lang = ['es', 'en', 'pt']
     df = pd.read_csv('/opt/airflow/data/comentarios_nlp.csv', sep=',')
     for i in lang: 
-        df.loc[(df.language == {i}), ]
+        df.loc[(df.language == i), ]
         df = df.reset_index(drop=True)
         df.to_csv(f'/opt/airflow/data/{i}_comentarios_raw.csv', index = False, sep=',')
 
