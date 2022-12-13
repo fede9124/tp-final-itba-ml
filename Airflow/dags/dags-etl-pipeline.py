@@ -114,14 +114,14 @@ def clean_es():
     df.to_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
 
 
-def z_score_model():
+def z_score_model_es():
     from utils.NLP_ML_esp import stoplist
-    from utils.NLP_ML_esp import z_score_monroe
+    from utils.NLP_ML_esp import z_score_monroe_es
     import time
     import pandas as pd
     df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
     t0 = time.time()
-    ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist())
+    ZScore = z_score_monroe_es(df, 'target', 'text_norm', 1, None, 10, stoplist())
     t1 = time.time()
     print('Took', (t1 - t0)/60, 'minutes')
     ZScore.to_csv(f'/opt/airflow/data/palabras_divisorias_es.csv', index=False)
@@ -272,8 +272,19 @@ with DAG(
 
     task_z_score_model = PythonOperator(
         task_id='z_score_model',
-        python_callable=z_score_model,
+        python_callable=z_score_model_es,
     )
 
-    task_cleaning >> task_z_score_model
+
+    task_upload_data = PythonOperator(
+        task_id='upload_data',
+        python_callable=upload_data,
+        op_kwargs={
+            'file': 'palabras_divisorias_es.csv',
+            'table_name': 'palabras_divisorias_es'
+        }
+    )
+
+
+    task_cleaning >> task_z_score_model >> task_upload_data
 
