@@ -121,7 +121,7 @@ def z_score_model():
     import pandas as pd
     df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
     t0 = time.time()
-    ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist)
+    ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist())
     t1 = time.time()
     print('Took', (t1 - t0)/60, 'minutes')
     ZScore.to_csv(f'/opt/airflow/data/palabras_divisorias_es.csv', index=False)
