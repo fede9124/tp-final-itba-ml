@@ -1,25 +1,51 @@
 #Trabajo práctico final 
 
 
-## 
+## Objetivo del proyecto
+Generar una plataforma de visualización donde se obtenga un análisis cuantitativo y cualitativo de los comentarios y valoraciones volcados por los usuarios en las plataformas de viaje sobre los atractivos turísticos del destino turístico de interés. Para esto se espera genenerar indicadores clave y la aplicación de modelos de procesamiento de lenguaje natural NLP - por sus siglas en inglés) orientado a conocer los motivos que explican y justifican el puntaje de las calificaciones.
+
 
 ## Objetivo del desarrollo
+El objetivo es la implementación de un pipeline que permita: 
 
-El objetivo es la implementación de un pipeline que permita el procesamiento 
-del desarrollo es ofrecerle a los clientes una plataforma de visualizacion donde puedan conocer la opinión de los viajeros sobre los atractivos turísticos de su destino a partir de los comentarios de usuarios en plataformas de viaje como TripAdvisor.
-
-
-
-A partir de esta información se espera lograr un análisis cuantitativo de los atractivos turísticos en los destinos y poder conocer los motivos que determinan las calificaciones positivas y las negativas 
+1) Carga y subida de los datasets de atractivos y valoración a una base de datos.
+2) Procesamiento de dataset de comentarios para la aplicación de modelos de NLP y posterior subida a una base de datos.
+3) Desarrollo de una visualización con los resultados.
 
 
 
-Pasos a seguir
+### Arquitectura implementada
+
+![Arquitectura](C:\Users\Fede\Documents\GitHub\tp-final-itba-ml\Arquitectura\Arquitectura.png)
+
+
+Recursos 
+
+Procesamiento
+- Instancia de EC2 t2.large (Airflow)
+- Instancia de EC2 t2.medium (Superset)
+
+Base de datos
+- RDS (Postgres)  
+
+
+Redes
+- Virtual Private Netwok
+
+- Subred privada 
+
+- 2 IPs elásticas
+
+Tecnologías
+
+- Apache Airflow
+- Apache Superset
+
+## Pasos a seguir
 
 1. Se crea un bucket y dos carpetas. La primera es raw_data donde se alojarán los archivos originales y la segunda es processed_data donde se alojarán los archivos a ser entregados a los clientes.  
 2. Creación de VPC  (ampliar a subnets, etc)
 3. Lanzamiento de instancia en EC2.  Ubuntu Server 20.04 LTS  t2.large (2vcpu / 8GB ram)
-
 
 
 
