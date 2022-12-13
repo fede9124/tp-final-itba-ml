@@ -47,7 +47,7 @@ def upload_data(file, table_name):
     pg_hook = PostgresHook(postgres_conn_id='postgres_conn')
     engine = pg_hook.get_sqlalchemy_engine()
     df = pd.read_csv(f'/opt/airflow/data/{file}')
-    df.to_sql(table_name=table_name, con=engine, if_exists= 'replace', index= False)
+    df.to_sql(name=table_name, con=engine, if_exists= 'replace', index= False)
     
 
 def separate_reviews():
