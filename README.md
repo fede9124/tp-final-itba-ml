@@ -12,7 +12,7 @@ El objetivo es la implementación de un pipeline que permita:
 2) Procesamiento de dataset de comentarios para la aplicación de modelos de NLP y posterior subida a una base de datos.
 3) Desarrollo de una visualización con los resultados.
 
-
+El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mientras que no se contemplan actualizaciones en un periodo inferior al año.  
 
 ### Arquitectura implementada
 
@@ -52,11 +52,6 @@ Tecnologías
 Instalación docker
 Manual 
 
-# VER PORQUE NO FUNCIONA CORRIENDO EL SCRIPT
-Instalación docker
-cd /home/data/tp-final-itba-ml
-sudo chmod +x ./docker_install.sh
-./docker_install.sh
 
 
 # Instalacion Docker Compose
@@ -66,12 +61,6 @@ sudo chmod +x ./docker_install.sh
 Instalación Airflow
 https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml
 
-
-# VER SI SE NECESITA UNA IP ELÁSTICA
-
-FAQ
-
-¿Por qué una instancia EC2 y no otras alternativas?
 
 
 
@@ -165,5 +154,23 @@ sudo usermod -aG docker $USER
 
 #### Paso 2. Instalación Superset
 ```
+git clone https://github.com/apache/superset.git
+cd superset
+docker compose -f docker-compose-non-dev.yml pull
+docker compose -f docker-compose-non-dev.yml up -d
+```
 
 
+Para lograr la visualización de mapas de MAPBOX se obtuvo un token API de https://www.mapbox.com y se cargó manualmente en el archivo de configuraciones
+```
+cd /home/ubuntu/superset/docker/pythonpath_dev/
+vim superset_config.py
+
+# Añadir linea al final con:
+MAPBOX_API_KEY = ""
+```
+
+## FAQ
+
+¿Por qué implementar a través de instancias EC2 y no usar otras alternativas como Amazon Managed Workflows for Apache Airflow (MWAA)?
+Este proyecto no cuenta con 
