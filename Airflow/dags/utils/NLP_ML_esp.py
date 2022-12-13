@@ -34,7 +34,7 @@ def stoplist():
         atractions_stoplist = ['perito', 'moreno', 'fitz', 'roy', 'cabo', 'virgenes']
         random_stoplist = ['entrar', 'minuto', 'ave', 'gracias', 'dejar', 'cada', 'mas', 'siempre', 'nunca', 'gracia']
         stoplist = stoplist + specifict_stoplist + adjetive_stoplist + atractions_stoplist + random_stoplist
-        print(stoplist)
+        return stoplist
 
 
 def word_embeddings_model():
