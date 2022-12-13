@@ -71,7 +71,7 @@ def cleaning(df):
 
 
 def stoplist():
-        stoplist = stopwords.words(lang)
+        stoplist = stopwords.words('spanish')
         specifict_stoplist = ['num', 'ser', 'tener', 'poder', 'haber', 'hacer', 'ver', 'lugar', 'ir', 'parecer', 'si', 'no']
         adjetive_stoplist = ['perfecto', 'indescriptible', 'impecable','genial', 'excelente', 'exelente', 'impresionante', 'inolvidable', 'increible', 'excelente', 'increibl', 'lindo', 'linda', 'bueno', 'buena', 'super', 'mejor', 'majestuoso','inolvidable', 'impresionante', 'interesante', 'impactante','maravilla', 'maravilloso', 'espectacular', 'realmente', 'hermoso', 'imponente', 'belleza', 'unico', 'imperdible', 'malo', 'mal', 'altamente', 'bonito', 'magico']
         atractions_stoplist = ['perito', 'moreno', 'fitz', 'roy', 'cabo', 'virgenes']
