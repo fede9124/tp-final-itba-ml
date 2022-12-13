@@ -3,21 +3,12 @@ from airflow import DAG
 from airflow.models import taskinstance
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-from airflow.hooks.S3_hook import S3Hook
-from airflow.hooks.postgres_hook import PostgresHook
 
-
-from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine
-
-
-import pandas as pd
 import boto3
-import os
+
 from datetime import datetime
 from datetime import timedelta
 
-from utils.NLP_utils import preprocesamiento
 from utils.NLP_ML_esp import cleaning
 from utils.NLP_ML_esp import stoplist
 from utils.NLP_ML_esp import z_score_model
@@ -36,18 +27,24 @@ default_args = {
 
 
 def download_from_s3(key: str, bucket_name: str, local_path: str) -> str:
+    from airflow.hooks.S3_hook import S3Hook
     hook = S3Hook('s3_connection')
     file_name = hook.download_file(key=key, bucket_name=bucket_name, local_path=local_path)
     return file_name
 
 
 def rename_file(ti, new_name: str) -> None:
+    import os
     download_file_name = ti.xcom_pull(task_ids=['download_from_s3'])
     downloaded_file_path = '/'.join(download_file_name[0].split('/')[:-1])
     os.rename(src=download_file_name[0], dst=f"{downloaded_file_path}/{new_name}")
 
 
 def upload_data(file, table_name):
+    from airflow.hooks.postgres_hook import PostgresHook
+    from sqlalchemy import create_engine
+    from sqlalchemy.engine import Engine
+    import pandas as pd
     pg_hook = PostgresHook(postgres_conn_id='postgres_conn')
     engine = pg_hook.get_sqlalchemy_engine()
     df = pd.read_csv(f'/opt/airflow/data/{file}')
@@ -55,6 +52,7 @@ def upload_data(file, table_name):
     
 
 def separate_reviews():
+    import pandas as pd
     lang = ['es', 'en', 'pt']
     df = pd.read_csv('/opt/airflow/data/comentarios_nlp.csv', sep=',')
     for i in lang: 
@@ -64,6 +62,8 @@ def separate_reviews():
 
 
 def preprocess():
+    from utils.NLP_utils import preprocesamiento
+    import pandas as pd
     lang = ['es', 'en', 'pt']
     lang_long = {'es': 'spanish',
                 'en': 'english',
