@@ -119,7 +119,7 @@ def z_score_model():
     from utils.NLP_ML_esp import z_score_monroe
     import time
     import pandas as pd
-    df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', set=',')
+    df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
     t0 = time.time()
     ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist)
     t1 = time.time()
@@ -277,15 +277,3 @@ with DAG(
 
     task_cleaning >> task_z_score_model
 
-
-
-'''
-
-
-
-    task_create_stoplist = PythonOperator(
-        task_id='create_stoplist',
-        python_callable=create_stoplist,
-    )
-
-    '''
