@@ -23,7 +23,7 @@ echo \
 
 #Última versión
 
-sudo apt-get update
+S
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Por si quiero usar una versión en particular
