@@ -16,7 +16,7 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 
 ### Arquitectura implementada
 
-[Arquitectura](C:\Users\Fede\Documents\GitHub\tp-final-itba-ml\Arquitectura\Arquitectura.png)
+![Arquitectura](C:\Users\Fede\Documents\GitHub\tp-final-itba-ml\Arquitectura\Arquitectura.png "Arquitectura")
 
 
 Recursos 
