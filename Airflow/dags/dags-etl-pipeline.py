@@ -6,9 +6,9 @@ from airflow.operators.python import PythonOperator
 import boto3
 from datetime import datetime
 from datetime import timedelta
-from utils.NLP_ML_esp import cleaning
-from utils.NLP_ML_esp import stoplist
-from utils.NLP_ML_esp import z_score_model
+#from utils.NLP_ML_esp import cleaning
+#from utils.NLP_ML_esp import stoplist
+#from utils.NLP_ML_esp import z_score_model
 
 
 default_args = {
