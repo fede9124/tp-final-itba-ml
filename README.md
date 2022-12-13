@@ -40,3 +40,11 @@ https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml
 FAQ
 
 ¿Por qué una instancia EC2 y no otras alternativas?
+
+
+
+
+Superset
+
+Instalación Docker
+Instalación Superset
