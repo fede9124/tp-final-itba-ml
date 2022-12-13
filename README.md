@@ -48,7 +48,8 @@ Superset
 
 Instalación Docker
 
-`sudo apt-get update
+```
+sudo apt-get update
 
 sudo apt-get install \
    ca-certificates \
@@ -59,6 +60,8 @@ sudo apt-get install \
 
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg`
+
+```
 
 
 Instalación Superset
