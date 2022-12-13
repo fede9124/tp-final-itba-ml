@@ -27,49 +27,6 @@ from tqdm import tqdm
 from utils.NLP_utils import desarmar_lista
 
 
-def cleaning(df):
-        df['text_norm'] = df['text_norm'].str.replace(r'cabo virgén', 'cabo virgenes')
-        df['text_norm'] = df['text_norm'].str.replace(r' recomeir ', ' recomendar ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^recomeir ', 'recomendar ')
-        df['text_norm'] = df['text_norm'].str.replace(r' excursión ', ' excursion ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^excursión ', 'excursion ')
-        df['text_norm'] = df['text_norm'].str.replace(r' increibl ', ' increible ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^increibl ', 'increible ')
-        df['text_norm'] = df['text_norm'].str.replace(r' paisaj ', ' paisaje ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^paisaj ', 'paisaje ')
-        df['text_norm'] = df['text_norm'].str.replace(r' tén ', ' tener ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^tén ', 'tener ')
-        df['text_norm'] = df['text_norm'].str.replace(r' pod ', ' poder ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^pod ', 'poder ')
-        df['text_norm'] = df['text_norm'].str.replace(r' perdertir ', ' perder ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^perdertir ', 'perder ')
-        df['text_norm'] = df['text_norm'].str.replace(r' magallán ', ' magallanes ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^magallán ', 'magallanes ')
-        df['text_norm'] = df['text_norm'].str.replace(r' escursion ', ' excursion ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^escursion ', 'excursion ')
-        df['text_norm'] = df['text_norm'].str.replace(r' confiterio ', ' confiteria ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^confiterio ', 'confiteria ')
-        df['text_norm'] = df['text_norm'].str.replace(r' chaltir ', ' chalten ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^chaltir ', 'chalten ')
-        df['text_norm'] = df['text_norm'].str.replace(r' chaltar ', ' chalten ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^chaltar ', 'chalten ')
-        df['text_norm'] = df['text_norm'].str.replace(r' olvir ', ' olvidar ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^olvir ', 'olvidar ')
-        df['text_norm'] = df['text_norm'].str.replace(r' unicar ', ' unica ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^unicar ', 'unica ')
-        df['text_norm'] = df['text_norm'].str.replace(r' bellisir ', ' bellisimo ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^bellisir ', 'bellisimo ')
-        df['text_norm'] = df['text_norm'].str.replace(r' apreceír ', ' apreciar ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^apreceír ', 'apreciar ')
-        df['text_norm'] = df['text_norm'].str.replace(r' inigualabl ', ' inigualable ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^inigualabl ', 'inigualable ')
-        df['text_norm'] = df['text_norm'].str.replace(r' cristín ', ' cristina ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^cristín ', 'cristina ')
-        df['text_norm'] = df['text_norm'].str.replace(r' gana ', ' ganas ')
-        df['text_norm'] = df['text_norm'].str.replace(r'^gana ', 'ganas ')
-        return df
-
-
 def stoplist():
         stoplist = stopwords.words('spanish')
         specifict_stoplist = ['num', 'ser', 'tener', 'poder', 'haber', 'hacer', 'ver', 'lugar', 'ir', 'parecer', 'si', 'no']
