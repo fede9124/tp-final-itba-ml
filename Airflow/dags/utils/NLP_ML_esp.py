@@ -59,7 +59,7 @@ def bigrams():
         df_collocations.drop_duplicates().sort_values(by="score",ascending=False).to_csv(path + f'data/bigramas/bigramas_{lang}.csv', index = False)
 
 
-def z_score_monroe(DataFrame, variable_clase, variable_contenido, smoth_alpha, preprocessor, min_df, stop_words):  
+def z_score_monroe_es(DataFrame, variable_clase, variable_contenido, smoth_alpha, preprocessor, min_df, stop_words):  
     
     X = DataFrame[variable_contenido]
     y = DataFrame[variable_clase]
