@@ -105,7 +105,7 @@ with DAG(
         task_id='upload_data',
         python_callable=upload_data,
         op_kwargs={
-            'file': 'atractivos_dashboad.csv',
+            'file': 'atractivos_dashboard.csv',
             'table_name': 'atractivos'
         }
     )
