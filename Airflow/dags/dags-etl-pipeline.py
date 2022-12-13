@@ -6,7 +6,7 @@ from airflow.operators.python import PythonOperator
 import boto3
 from datetime import datetime
 from datetime import timedelta
-#from utils.NLP_ML_esp import z_score_model
+
 
 
 default_args = {
@@ -114,10 +114,17 @@ def clean_es():
     df.to_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
 
 
-def create_stoplist():
+def z_score_model():
     from utils.NLP_ML_esp import stoplist
-    return stoplist
-
+    from utils.NLP_ML_esp import z_score_monroe
+    import time
+    import pandas as pd
+    df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', set=',')
+    t0 = time.time()
+    ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist)
+    t1 = time.time()
+    print('Took', (t1 - t0)/60, 'minutes')
+    ZScore.to_csv(f'/opt/airflow/data/palabras_divisorias_es.csv', index=False)
 
 # Creo los DAGs de Airflow
 
@@ -263,20 +270,22 @@ with DAG(
         python_callable=clean_es,
     )
 
+    task_z_score_model = PythonOperator(
+        task_id='z_score_model',
+        python_callable=z_score_model,
+    )
+
+    task_cleaning >> task_z_score_model
+
+
+
+'''
+
+
 
     task_create_stoplist = PythonOperator(
         task_id='create_stoplist',
         python_callable=create_stoplist,
     )
 
-    task_cleaning >> task_create_stoplist
-
-'''
-    task_z_score_model = PythonOperator(
-        task_id='z_score_model',
-        python_callable=z_score_model,
-    )
-
-
-
-'''
+    '''
