@@ -93,13 +93,7 @@ def z_score_monroe(DataFrame, variable_clase, variable_contenido, smoth_alpha, p
     return(palabras_z_score)
 
 
-def z_score_model(df):
-        import time
-        t0 = time.time()
-        ZScore = z_score_monroe(df, 'target', 'text_norm', 1, None, 10, stoplist)
-        t1 = time.time()
-        print('Took', (t1 - t0)/60, 'minutes')
-        ZScore.to_csv(f'/opt/airflow/data/palabras_divisorias_es.csv', index=False)
+
 
 
 
