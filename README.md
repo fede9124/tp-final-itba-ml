@@ -181,7 +181,7 @@ sudo usermod -aG docker $USER
 
 #### Paso 2. Instalación Superset
 
-También de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
+También de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local. 
 Versión: Última versión estable
 
 ```
