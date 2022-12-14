@@ -133,6 +133,7 @@ Se efectua en la UI de Airflow a la cual se accede a través de su IP pública (
 - Conexión con S3
 - Conexión con RDS de Postgres 
 
+![Conexiones Airflow](https://github.com/fede9124/tp-final-itba-ml/blob/main/Arquitectura/Conexiones_airflow.png?raw=true "Conexiones Airflow")
 
 ## Configuración de instancia con Superset
 
