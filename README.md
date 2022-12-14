@@ -1,8 +1,11 @@
 # Trabajo práctico final 
 
+Los datos utilizados y el proceso llevado adelante corresponde a un proyecto ya implementado a través de Google Colab y Power BI. 
+
+Se lo puede visitar en https://www.santacruzpatagonia.gob.ar/observatorio-economico/valoracion-online
 
 ## Objetivo del proyecto
-Generar una plataforma de visualización donde se obtenga un análisis cuantitativo y cualitativo de los comentarios y valoraciones volcados por los usuarios en las plataformas de viaje sobre los atractivos turísticos del destino turístico de interés. Para esto se espera genenerar indicadores clave y la aplicación de modelos de procesamiento de lenguaje natural NLP - por sus siglas en inglés) orientado a conocer los motivos que explican y justifican el puntaje de las calificaciones.
+Generar una plataforma de visualización donde se obtenga un análisis cuantitativo y cualitativo de los comentarios y valoraciones volcados por los usuarios en las plataformas de viaje sobre los atractivos turísticos del destino turístico de interés. Para esto se espera genenerar indicadores clave y la aplicación de modelos de procesamiento de lenguaje natural NLP (-por sus siglas en inglés-) orientado a conocer los motivos que explican y justifican el puntaje de las calificaciones.
 
 
 ## Objetivo del desarrollo
@@ -12,7 +15,8 @@ El objetivo es la implementación de un pipeline que permita:
 2) Procesamiento de dataset de comentarios para la aplicación de modelos de NLP y posterior subida a una base de datos y al bucket asociado al proyecto.
 3) Desarrollo de una visualización con los resultados.
 
-El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mientras que no se contemplan actualizaciones en un periodo inferior al año.  
+El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mientras que no se contemplan actualizaciones en un periodo inferior al año. 
+
 
 ## Arquitectura implementada
 
@@ -25,7 +29,7 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 - Instancia de EC2 t2.large (Airflow)
 - Instancia de EC2 t2.medium (Superset)
 
-### Base de datos
+#### Base de datos
 - RDS (Postgres)  
 
 #### Redes
@@ -42,7 +46,7 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 
 ## Pasos realizados para la implementación
 
-1. Creación de bucket y sus carpetas correspondientes. La primera es raw_data donde se alojarán los archivos originales y la segunda es processed_data donde se alojarán los archivos soporte (pueden llegar a ser entregados a los clientes).  
+1. Creación de bucket y sus carpetas correspondientes (el bucket es externo a la organización por inconvenientes para generar credenciales desde el lab). La primera es raw_data donde se alojarán los archivos originales y la segunda es processed_data donde se alojarán los archivos soporte (pueden llegar a ser entregados a los clientes).  
 2. Creación de la VPC (incluye la creación del internet gateway)
 3. Creación de las subredes públicas y privadas
 4. Lanzamiento de las instancias en EC2.
@@ -131,7 +135,7 @@ Se efectua en la UI de Airflow a la cual se accede a través de su IP pública (
 - Conexión con RDS de Postgres 
 
 
-## Superset
+## Configuración de instancia con Superset
 
 Se realiza de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
 Versión: Última versión estable
@@ -191,15 +195,42 @@ vim superset_config.py
 MAPBOX_API_KEY = ""
 ```
 
-## FAQ
+## DAGs 
 
-¿Por qué implementar a través de instancias EC2 y no usar otras alternativas como Amazon Managed Workflows for Apache Airflow (MWAA)?
-Este proyecto no cuenta con 
+Se implementaron 4 DAGs para ejecutar las diferentes tareas requeridas.
+
+#### DAG atractivos
+- Levanta dataset del bucket
+- Carga dataset en RDS
+
+IMG
+
+#### DAG valoraciones
+- Levanta dataset del bucket
+- Carga dataset en RDS
+IMG
+
+
+#### DAG comentarios
+- Levanta dataset del bucket
+- Separa el dataset de acuerdo al idioma de los comentarios 
+
+IMG
+
+#### DAG NLP_español
+- Levanta el dataset generado por el DAG de comentarios
+- Implementa modelo de NLP
+- Carga dataset generados a RDS
+
+IMG
 
 
 
-## Tareas penduentes de la implementación
+## Tareas pendientes de la implementación
 
 1. Control de dependencias a través de Poetry.
-2. Añadir procesamientos adicionales de NLP.
-3. Replicar los resultados para comentarios en español en inglés y portugués.
+2. Añadir una instancia como bastión host para un único acceso externo a todos los componentes.
+3. Añadir procesamientos adicionales de NLP que todavía no se implementaron.
+4. Replicar los resultados para comentarios en español en inglés y portugués.
+5. Buscar alternativas para permitir acceso público a Superset (¿Servidor web con NGINX?)
+6. Analizar otras alternativas de implementación de acuerdo a los costes. La actual fue considerada más económica para una instancia de desarrollo respecto del Amazon Managed Workflows for Apache Airflow (MWAA).
