@@ -7,6 +7,7 @@ Se lo puede visitar en https://www.santacruzpatagonia.gob.ar/observatorio-econom
 ## Objetivo del proyecto
 Generar una plataforma de visualización donde se obtenga un análisis cuantitativo y cualitativo de los comentarios y valoraciones volcados por los usuarios en las plataformas de viaje sobre los atractivos turísticos del destino turístico de interés. Para esto se espera genenerar indicadores clave y la aplicación de modelos de procesamiento de lenguaje natural NLP (-por sus siglas en inglés-) orientado a conocer los motivos que explican y justifican el puntaje de las calificaciones.
 
+El análisis de NLP fue implementado mediante la aplicación del modelo propuesto en el siguiente paper(https://www.cambridge.org/core/services/aop-cambridge-core/content/view/81B3703230D21620B81EB6E2266C7A66/S1047198700002291a.pdf/fightin-words-lexical-feature-selection-and-evaluation-for-identifying-the-content-of-political-conflict.pdf) el cual busca identificar palabras divisorias entre comentarios positivos y negativos. 
 
 ## Objetivo del desarrollo
 El objetivo es la implementación de un pipeline que permita: 
