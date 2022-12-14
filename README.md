@@ -7,6 +7,12 @@ Generar una plataforma de visualización donde se obtenga un análisis cuantitat
 
 El análisis de NLP fue implementado mediante la aplicación del modelo propuesto en el siguiente [paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/81B3703230D21620B81EB6E2266C7A66/S1047198700002291a.pdf/fightin-words-lexical-feature-selection-and-evaluation-for-identifying-the-content-of-political-conflict.pdf) el cual busca identificar palabras divisorias entre comentarios positivos y negativos. 
 
+
+Datasets utilizados
+- atractivos_dashboard.csv		
+- comentarios_dashboard.csv	
+- comentarios_nlp.csv (muestra de 1000 casos)
+
 ## Objetivo del desarrollo
 El objetivo es la implementación de un pipeline que permita: 
 
