@@ -28,6 +28,12 @@ def download_from_s3(key: str, bucket_name: str, local_path: str) -> str:
     return file_name
 
 
+def upload_to_s3(filename: str, key: str, bucket_name: str) -> None:
+    from airflow.hooks.S3_hook import S3Hook
+    hook = S3Hook('s3_connection')
+    file_name = hook.load_file(filename=filename, key=key, bucket_name=bucket_name)
+
+
 def rename_file(ti, new_name: str) -> None:
     import os
     download_file_name = ti.xcom_pull(task_ids=['download_from_s3'])
@@ -125,6 +131,22 @@ def z_score_model_es():
     t1 = time.time()
     print('Took', (t1 - t0)/60, 'minutes')
     ZScore.to_csv(f'/opt/airflow/data/palabras_divisorias_es.csv', index=False)
+
+'''
+
+def bigrams_model():
+    from utils.NLP_ML_esp import bigrams
+    import pandas as pd
+    df = pd.read_csv(f'/opt/airflow/data/es_comentarios_processed_clean.csv', sep=',')
+    trainset = (df.text_norm.str.split(' ')).to_list()
+
+
+
+def embeddings():
+    import pandas as pd
+    
+
+'''
 
 # Creo los DAGs de Airflow
 
@@ -285,6 +307,15 @@ with DAG(
         }
     )
 
+    task_upload_to_s3 = PythonOperator(
+        task_id='upload_to_s3',
+        python_callable=upload_to_s3,
+        op_kwargs={
+            'filename': '/opt/airflow/data/palabras_divisorias_es.csv',
+            'key': 'Santa Cruz/processed_data/palabras_divisorias_es.csv',
+            'bucket': 'tp-ml-bucket'
+        }
+    )
 
-    task_cleaning >> task_z_score_model >> task_upload_data
+    task_cleaning >> task_z_score_model >> task_upload_data >> task_upload_to_s3
 
