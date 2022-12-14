@@ -25,7 +25,7 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 
 ## Arquitectura implementada
 
-![Arquitectura](https://github.com/fede9124/tp-final-itba-ml/blob/main/Arquitectura/Arquitectura.png?raw=true "Arquitectura")
+![Arquitectura](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/Arquitectura.png?raw=true "Arquitectura")
 
 
 ### Recursos de la infraestructura 
@@ -139,7 +139,7 @@ Se efectua en la UI de Airflow a la cual se accede a través de su IP pública (
 - Conexión con S3
 - Conexión con RDS de Postgres 
 
-![Conexiones Airflow](https://github.com/fede9124/tp-final-itba-ml/blob/main/Arquitectura/Conexiones_airflow.png?raw=true "Conexiones Airflow")
+![Conexiones Airflow](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/Conexiones_airflow.png?raw=true "Conexiones Airflow")
 
 ## Configuración de instancia con Superset
 
@@ -204,7 +204,6 @@ MAPBOX_API_KEY = ""
 ## DAGs 
 
 Se implementaron 4 DAGs para ejecutar las diferentes tareas requeridas.
-
 
 
 ![DAGs](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dags.png?raw=true "DAGs")
