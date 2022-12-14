@@ -8,7 +8,7 @@ Generar una plataforma de visualización donde se obtenga un análisis cuantitat
 El análisis de NLP fue implementado mediante la aplicación del modelo propuesto en el siguiente [paper](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/81B3703230D21620B81EB6E2266C7A66/S1047198700002291a.pdf/fightin-words-lexical-feature-selection-and-evaluation-for-identifying-the-content-of-political-conflict.pdf) el cual busca identificar palabras divisorias entre comentarios positivos y negativos. 
 
 
-Datasets utilizados
+Datasets utilizados:
 - atractivos_dashboard.csv		
 - comentarios_dashboard.csv	
 - comentarios_nlp.csv (muestra de 1000 casos)
@@ -48,6 +48,17 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 
 - Apache Airflow
 - Apache Superset
+
+
+dags-etl-pipeline.py
+-utils 
+ __init__.py
+ NLP_ML_es.py
+ NLP_utils.py
+
+
+
+
 
 ## Pasos realizados para la implementación
 
