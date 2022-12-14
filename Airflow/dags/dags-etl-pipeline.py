@@ -313,7 +313,7 @@ with DAG(
         op_kwargs={
             'filename': '/opt/airflow/data/palabras_divisorias_es.csv',
             'key': 'Santa Cruz/processed_data/palabras_divisorias_es.csv',
-            'bucket': 'tp-ml-bucket'
+            'bucket_name': 'tp-ml-bucket'
         }
     )
 
