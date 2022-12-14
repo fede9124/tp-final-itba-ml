@@ -205,30 +205,47 @@ MAPBOX_API_KEY = ""
 
 Se implementaron 4 DAGs para ejecutar las diferentes tareas requeridas.
 
+
+
+![DAGs](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dags.png?raw=true "DAGs")
+
+
 #### DAG atractivos
 - Levanta dataset del bucket
 - Carga dataset en RDS
 
-IMG
+![DAG atractivos](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dag_atractivos.png?raw=true "DAG atractivos")
 
 #### DAG valoraciones
 - Levanta dataset del bucket
 - Carga dataset en RDS
-IMG
+
+![DAG valoraciones](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dag_valoraciones.png?raw=true "DAG valoraciones")
 
 
 #### DAG comentarios
 - Levanta dataset del bucket
-- Separa el dataset de acuerdo al idioma de los comentarios 
+- Separa el dataset de acuerdo al idioma de los comentarios
+- Hacer preprocesamiento de los comentarios (normalización y tokenización)
 
-IMG
+![DAG comentarios](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dag_comentarios.png?raw=true "DAG comentarios")
 
 #### DAG NLP_español
 - Levanta el dataset generado por el DAG de comentarios
 - Implementa modelo de NLP
 - Carga dataset generados a RDS
+- Carga dataset generados a bucket
 
-IMG
+
+![DAG comentarios](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/dag_nlp_espa%C3%B1ol.PNG?raw=true "DAG comentarios")
+
+
+
+## Dashboard construido 
+
+Versión de prueba (primera interacción con la herramienta).
+
+![Dashboard](https://github.com/fede9124/tp-final-itba-ml/blob/main/Im%C3%A1genes%20Arquitectura/Dashboard-superset.jpg?raw=true "Dashboard")
 
 
 
