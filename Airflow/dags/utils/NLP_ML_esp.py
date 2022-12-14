@@ -37,27 +37,6 @@ def stoplist():
         return stoplist
 
 
-def word_embeddings_model():
-
-# "window" es el tamaño de la ventana. windows = 10, usa 10 palabras a la izquierda y 10 palabras a la derecha
-# "n_dim" es la dimension (i.e. el largo) de los vectores de word2vec
-# "workers" es el numero de cores que usa en paralelo. Para aprovechar eso es necesario tener instalado Cython)
-# "sample": word2vec filtra palabras que aparecen una fraccion mayor que "sample"
-# "min_count": Word2vec filtra palabras con menos apariciones que  "min_count"
-# "sg": para correr el Skipgram model (sg = 1), para correr el CBOW (sg = 0)
-# para mas detalle ver: https://radimrehurek.com/gensim/models/word2vec.html
-
-        w2v_model = Word2Vec(trainset_ngrams, workers=4, size= 20, min_count = 10, window = 10, sample = 1e-3,negative=5,sg=1)
-        w2v_model.save(path + f"modelos/model_{lang}.model")
-
-
-def bigrams():
-        trainset = (df.text_norm.str.split(' ')).to_list()
-        collocations = Phrases(sentences=trainset, min_count=10,threshold=0.5,scoring='npmi') # threshold: minimo score aceptado
-        to_collocations = Phraser(collocations)
-        df_collocations =pd.DataFrame([x for x in collocations.export_phrases(trainset)],columns=["bigram","score"])
-        df_collocations.drop_duplicates().sort_values(by="score",ascending=False).to_csv(path + f'data/bigramas/bigramas_{lang}.csv', index = False)
-
 
 def z_score_monroe_es(DataFrame, variable_clase, variable_contenido, smoth_alpha, preprocessor, min_df, stop_words):  
     
@@ -96,4 +75,39 @@ def z_score_monroe_es(DataFrame, variable_clase, variable_contenido, smoth_alpha
 
 
 
+'''
+
+def bigrams():
+        trainset = (df.text_norm.str.split(' ')).to_list()
+        collocations = Phrases(sentences=trainset, min_count=10,threshold=0.5,scoring='npmi') # threshold: minimo score aceptado
+        to_collocations = Phraser(collocations)
+        df_collocations =pd.DataFrame([x for x in collocations.export_phrases(trainset)],columns=["bigram","score"])
+        df_collocations.drop_duplicates().sort_values(by="score",ascending=False).to_csv(f'/opt/airflow/data/bigramas_es.csv', index = False)
+        trainset_ngrams = to_collocations[trainset]
+        return trainset_ngrams
+
+
+def word_embeddings_model():
+
+# "window" es el tamaño de la ventana. windows = 10, usa 10 palabras a la izquierda y 10 palabras a la derecha
+# "n_dim" es la dimension (i.e. el largo) de los vectores de word2vec
+# "workers" es el numero de cores que usa en paralelo. Para aprovechar eso es necesario tener instalado Cython)
+# "sample": word2vec filtra palabras que aparecen una fraccion mayor que "sample"
+# "min_count": Word2vec filtra palabras con menos apariciones que  "min_count"
+# "sg": para correr el Skipgram model (sg = 1), para correr el CBOW (sg = 0)
+# para mas detalle ver: https://radimrehurek.com/gensim/models/word2vec.html
+
+        w2v_model = Word2Vec(trainset_ngrams = bigrams(), workers=4, size= 20, min_count = 10, window = 10, sample = 1e-3,negative=5,sg=1)
+        w2v_model.save(f'/opt/airflow/data/model_es.model')
+
+        listado = ['perito_moreno', 'fitz_roy', 'glaciar', 'excursion', 'paisaje', 'experiencia', 'parque_nacional', 'pasarela', 'servicio', 'guia', 'paz', 'energia', 'precio', 'limpieza', 'camino', 'calafate', 'chalten', 'pinguino', 'cueva', 'costa', 'bar', 'ruta', 'pintura']
+        df_similar_listado = pd.DataFrame(columns=['palabra_similar', 'similitud', 'palabra'])
+        for i in listado:
+                similar = w2v_model.wv.most_similar(positive=[i], negative=[], topn=25)
+                df_similar = pd.DataFrame(similar, columns=['palabra_similar', 'similitud'])
+                df_similar['palabra'] = str(i)
+                df_similar_listado = pd.concat([df_similar_listado, df_similar])
+                df_similar_listado.to_csv(path + f'data/menciones/menciones_similares_spanish.csv', index=False)
+
+'''
 
