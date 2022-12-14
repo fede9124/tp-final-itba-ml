@@ -50,14 +50,6 @@ El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mient
 - Apache Superset
 
 
-dags-etl-pipeline.py
--utils 
- __init__.py
- NLP_ML_es.py
- NLP_utils.py
-
-
-
 
 
 ## Pasos realizados para la implementación
