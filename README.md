@@ -9,64 +9,57 @@ Generar una plataforma de visualización donde se obtenga un análisis cuantitat
 El objetivo es la implementación de un pipeline que permita: 
 
 1) Carga y subida de los datasets de atractivos y valoración a una base de datos.
-2) Procesamiento de dataset de comentarios para la aplicación de modelos de NLP y posterior subida a una base de datos.
+2) Procesamiento de dataset de comentarios para la aplicación de modelos de NLP y posterior subida a una base de datos y al bucket asociado al proyecto.
 3) Desarrollo de una visualización con los resultados.
 
 El proceso tiene que ser fácilmente reproducible para cada nuevo cliente, mientras que no se contemplan actualizaciones en un periodo inferior al año.  
 
-### Arquitectura implementada
+## Arquitectura implementada
 
 ![Arquitectura](https://github.com/fede9124/tp-final-itba-ml/blob/main/Arquitectura/Arquitectura.png?raw=true "Arquitectura")
 
 
-Recursos 
+### Recursos de la infraestructura 
 
-Procesamiento
+#### Procesamiento
 - Instancia de EC2 t2.large (Airflow)
 - Instancia de EC2 t2.medium (Superset)
 
-Base de datos
+### Base de datos
 - RDS (Postgres)  
 
-
-Redes
+#### Redes
 - Virtual Private Netwok
-
-- Subred privada 
-
+- 2 subredes privada 
+- 2 subredes públicas
 - 2 IPs elásticas
+- 1 subred de bases de datos
 
-Tecnologías
+#### Tecnologías
 
 - Apache Airflow
 - Apache Superset
 
-## Pasos a seguir
+## Pasos realizados para la implementación
 
-1. Se crea un bucket y dos carpetas. La primera es raw_data donde se alojarán los archivos originales y la segunda es processed_data donde se alojarán los archivos a ser entregados a los clientes.  
-2. Creación de VPC  (ampliar a subnets, etc)
-3. Lanzamiento de instancia en EC2.  Ubuntu Server 20.04 LTS  t2.large (2vcpu / 8GB ram)
-
-
-
-Instalación docker
-Manual 
-
-
-
-# Instalacion Docker Compose
+1. Creación de bucket y sus carpetas correspondientes. La primera es raw_data donde se alojarán los archivos originales y la segunda es processed_data donde se alojarán los archivos soporte (pueden llegar a ser entregados a los clientes).  
+2. Creación de la VPC (incluye la creación del internet gateway)
+3. Creación de las subredes públicas y privadas
+4. Lanzamiento de las instancias en EC2.
+5. Instalación del software en las instancias.
+6. Creación de la base de datos en RDS.
+7. Configuración del grupo de subredes de las bases de datos (se añaden las dos subredes privadas).
+8. Configuración del grupo de seguridad para dar acceso a las instancias de EC2 a la base de datos.
 
 
+## Configuración de instancia con Airflow
 
-Instalación Airflow
-https://airflow.apache.org/docs/apache-airflow/2.5.0/docker-compose.yaml
-
-
-
-
-## Airflow
+Se utilizó una imagen de docker compose para su instanlación.
 
 #### Paso 1. Instalación Docker
+
+Se realiza de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
+Versión: Última versión estable
 
 ```
 sudo apt-get update
@@ -99,7 +92,25 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 ```
 
-#### Paso 2. Clonar repositorio con imagen de docker compose
+#### Paso 2. Descarga y edición de la imagen oficial de Airflow
+
+La imagen de Airflow se obtuvo de https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html.
+
+Luego se modificó la imagen para no utilizar la última imagen estable por defecto y crear una nueva imagen que mejor se adapte al proyecto.
+
+```
+  #image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.5.0}
+  build: .
+```
+
+#### Paso 3. Creación de dockerfile y requirements.txt para crear una nueva imagen de Airflow para la implementación
+
+En el dockerfile se estableció la imagen de airflow 2.5.0 y de python 3.9 ya que la versión por defecto (3.7) ya no tiene soporte con alguna de las librerías requeridas.
+En el .txt se añadieron los paquetes requeridos que no se encuentran disponibles en la instalación de Airflow.
+
+#### Paso 4. Clonación repositorio con imagen de docker compose
+
+Ejecutado de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
 
 ```
 git clone https://github.com/fede9124/tp-final-itba-ml
@@ -112,12 +123,18 @@ docker compose up airflow-init
 docker compose up -d
 ```
 
-#### Paso 3. Añadir las conexiones que se van a utilizar en la UI de Airflow
+#### Paso 3. Añadir conexiones en Airflow
+
+Se efectua en la UI de Airflow a la cual se accede a través de su IP pública (puerto 8080)  
 
 - Conexión con S3
 - Conexión con RDS de Postgres 
 
+
 ## Superset
+
+Se realiza de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
+Versión: Última versión estable
 
 #### Paso 1. Instalación Docker
 
@@ -153,6 +170,10 @@ sudo usermod -aG docker $USER
 ```
 
 #### Paso 2. Instalación Superset
+
+También de forma manual a través de una conexión SSH por el puerto 22 desde un acceso local.
+Versión: Última versión estable
+
 ```
 git clone https://github.com/apache/superset.git
 cd superset
@@ -174,3 +195,11 @@ MAPBOX_API_KEY = ""
 
 ¿Por qué implementar a través de instancias EC2 y no usar otras alternativas como Amazon Managed Workflows for Apache Airflow (MWAA)?
 Este proyecto no cuenta con 
+
+
+
+## Tareas penduentes de la implementación
+
+1. Control de dependencias a través de Poetry.
+2. Añadir procesamientos adicionales de NLP.
+3. Replicar los resultados para comentarios en español en inglés y portugués.
