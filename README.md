@@ -1,8 +1,6 @@
 # Trabajo práctico final 
 
-Los datos utilizados y el proceso llevado adelante corresponde a un proyecto ya implementado a través de Google Colab y Power BI. 
-
-Se lo puede visitar en <https://www.santacruzpatagonia.gob.ar/observatorio-economico/valoracion-online>
+Los datos utilizados y el proceso llevado adelante corresponde a un proyecto ya implementado a través de Google Colab y Power BI. El mismo puede ser visitado en <https://www.santacruzpatagonia.gob.ar/observatorio-economico/valoracion-online>.
 
 ## Objetivo del proyecto
 Generar una plataforma de visualización donde se obtenga un análisis cuantitativo y cualitativo de los comentarios y valoraciones volcados por los usuarios en las plataformas de viaje sobre los atractivos turísticos del destino turístico de interés. Para esto se espera genenerar indicadores clave y la aplicación de modelos de procesamiento de lenguaje natural NLP (-por sus siglas en inglés-) orientado a conocer los motivos que explican y justifican el puntaje de las calificaciones.
